@@ -7,7 +7,12 @@
 import Foundation
 
 final class BeerService {
-    let decoder = JSONDecoder()
+    let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
+    }
     let session: URLSession = {
         let sessionConfiguation = URLSessionConfiguration.default
         let session = URLSession(configuration: sessionConfiguation)
@@ -21,8 +26,7 @@ final class BeerService {
                 let data,
                 error == nil
             else { return }
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            
             let beerData = try! decoder.decode([BeerDTO].self, from: data)
             complitionHandler(beerData)
             

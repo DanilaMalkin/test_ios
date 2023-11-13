@@ -7,15 +7,17 @@
 
 import UIKit
 
-final class BeeerTableView: UIView {
+final class BeerTableView: UIView {
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
 
-        //tableView.dataSource = self
+        tableView.dataSource = tableManager
         return tableView
     }()
     
     private lazy var spinnerView = UIActivityIndicatorView(style: .large)
+    
+    private lazy var tableManager = BeerTableManager()
     
     init() {
         super.init(frame: .zero)
@@ -28,6 +30,13 @@ final class BeeerTableView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func configure(with viewModel: [BeerDTO]) {
+        tableManager.tableData = viewModel
+        spinnerView.stopAnimating()
+        tableView.reloadData()
+        
+    }
 }
 
 
@@ -36,7 +45,7 @@ final class BeeerTableView: UIView {
     
 
 // MARK: Private
-private extension BeeerTableView{
+private extension BeerTableView{
     func addSubview(){
         [tableView, spinnerView].forEach{
             self.addSubview($0)
