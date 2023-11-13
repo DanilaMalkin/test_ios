@@ -6,6 +6,13 @@
 //
 import Foundation
 
+
+
+protocol BeerServicing: AnyObject{
+    func fetchBeer(complitionHandler: @escaping([BeerDTO]) -> Void)
+}
+
+
 final class BeerService {
     let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -19,6 +26,10 @@ final class BeerService {
         return session
         
     }()
+
+//MARK: - BeerServicing
+
+extension BeerService : BeerServicing{
     func fetchBeer(complitionHandler: @escaping ([BeerDTO]) -> Void){
         let url: URL = URL(string: "https://api.punkapi.com/v2/beers")!
         session.dataTask(with: url, completionHandler: { data, response, error in
@@ -27,12 +38,13 @@ final class BeerService {
                 error == nil
             else { return }
             
-            let beerData = try! decoder.decode([BeerDTO].self, from: data)
+            let beerData = try! self.decoder.decode([BeerDTO].self, from: data)
             complitionHandler(beerData)
             
         }).resume()
         
         
     }
-    
 }
+    
+
