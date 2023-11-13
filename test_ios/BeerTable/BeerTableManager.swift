@@ -7,11 +7,21 @@
 
 import UIKit
 
-final class BeerTableManager: NSObject {
-    var tableData: [BeerDTO] = []
-    
+
+//MARK: BeerTableManagerDelegate
+
+protocol BeerTableManagerDelegate {
+    func didSelectRow(_ beerModel : BeerDTO)
     
 }
+
+
+final class BeerTableManager: NSObject {
+    var delegate: BeerTableManagerDelegate?
+    var tableData: [BeerDTO] = []
+    
+}
+
 
 //MARK: - UITableViewDataSource
 extension BeerTableManager: UITableViewDataSource{
@@ -29,7 +39,13 @@ extension BeerTableManager: UITableViewDataSource{
         cell.contentConfiguration = configuration
         return cell
     }
-    
-    
-    
+  
+}
+
+extension BeerTableManager : UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let beerModel = tableData[indexPath.row]
+        delegate?.didSelectRow(beerModel)
+    }
 }
